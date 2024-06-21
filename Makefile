@@ -6,7 +6,7 @@
 #    By: apintus <apintus@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/15 12:43:39 by apintus           #+#    #+#              #
-#    Updated: 2024/06/14 17:12:27 by apintus          ###   ########.fr        #
+#    Updated: 2024/06/21 19:19:43 by apintus          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,12 +29,12 @@ RESET = \033[0m
 ## SOURCES
 
 SRCS = main.c\
-		exit.c\
 		parsing.c\
 		init.c\
 		utils.c\
-		dinner.c\
 		monitor.c\
+		libft.c\
+		actions.c\
 
 OBJS = $(SRCS:.c=.o)
 

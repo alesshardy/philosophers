@@ -5,73 +5,82 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/13 17:06:22 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/17 18:58:02 by apintus          ###   ########.fr       */
+/*   Created: 2024/06/21 18:14:45 by apintus           #+#    #+#             */
+/*   Updated: 2024/06/21 19:20:52 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long	get_time(t_time_code code)
+void	wait_all_threads(size_t time)
+{
+	while (get_time() < time)
+		continue;
+}
+
+size_t	get_time(void)
 {
 	struct timeval	time;
 
-	if(gettimeofday(&time, NULL))
-		return (printf("gettimeofday failed"), -1);
-	if (code == SECOND)
-		return (time.tv_sec);
-	else if (code == MILLISECOND)
-		return (time.tv_sec * 1000 + time.tv_usec / 1000);
-	else if (code == MICROSECOND)
-		return (time.tv_sec * 1000000 + time.tv_usec);
-	return (-1);
+	gettimeofday(&time, NULL);
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
-
-void	my_usleep(long time, t_table *table)
+void	ft_usleep(size_t time, t_table *table)
 {
-	long	start;
+	size_t	start;
 
-	start = get_time(MICROSECOND);
-	while (get_time(MICROSECOND) - start < time)
+	start = get_time();
+	while (get_time() - start < time)
 	{
-		if (dinner_finished(table))
+		if (dinner_end(table))
 			break ;
 		usleep(100);
 	}
 }
 
-void	wait_all_thread(t_table *table)
+void	print_msg(t_philo *philo, int msg)
 {
-	bool	ready;
-
-	ready = false;
-	while (!ready)
+	pthread_mutex_lock(&philo->table->print_mtx);
+	if (dinner_end(philo->table) && msg != DIED)
 	{
-		pthread_mutex_lock(&table->table_mtx);
-		ready = table->thread_ready;
-		pthread_mutex_unlock(&table->table_mtx);
+		pthread_mutex_unlock(&philo->table->print_mtx);
+		return ;
 	}
+	if (msg == DIED)
+	{
+		printf("%s%09zu %zu died%s\n", RED,
+			get_time() - philo->table->time_start_dinner, philo->id, RST);
+		set_death(philo->table);
+	}
+	else if (msg == EAT)
+		printf("%s%09zu %zu is eating%s\n", G,
+			get_time() - philo->table->time_start_dinner, philo->id, RST);
+	else if (msg == SLEEP)
+		printf("%s%09zu %zu is sleeping%s\n", B,
+			get_time() - philo->table->time_start_dinner, philo->id, RST);
+	else if (msg == THINK)
+		printf("%s%09zu %zu is thinking%s\n", Y,
+			get_time() - philo->table->time_start_dinner, philo->id, RST);
+	else if (msg == FORK)
+		printf("%s%09zu %zu has taken a fork%s\n", W,
+			get_time() - philo->table->time_start_dinner, philo->id, RST);
+	pthread_mutex_unlock(&philo->table->print_mtx);
 }
 
-bool	dinner_finished(t_table *table)
+void	cleanning(t_table *table)
 {
-	bool	finished;
+	size_t	i;
 
-	pthread_mutex_lock(&table->table_mtx);
-	finished = table->dinner_finished;
-	pthread_mutex_unlock(&table->table_mtx);
-	return (finished);
-}
-
-void	clean(t_table *table)
-{
-	int	i;
-
-	i = -1;
-	while (++i < table->philo_nbr)
-		pthread_mutex_destroy(&table->philos[i].philo_mtx);
-	pthread_mutex_destroy(&table->table_mtx);
-	pthread_mutex_destroy(&table->print_mtx);
-	free(table->philos);
+	i = 0;
+	while (i < table->philo_nbr)
+	{
+		pthread_mutex_destroy(&table->forks[i]);
+		i++;
+	}
 	free(table->forks);
+	free(table->philos);
+	pthread_mutex_destroy(&table->dead_mtx);
+	pthread_mutex_destroy(&table->count_meal_mtx);
+	pthread_mutex_destroy(&table->print_mtx);
+	pthread_mutex_destroy(&table->last_meal_mtx);
 }

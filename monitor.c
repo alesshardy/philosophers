@@ -5,67 +5,89 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/14 17:12:13 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/17 16:36:51 by apintus          ###   ########.fr       */
+/*   Created: 2024/06/21 19:07:38 by apintus           #+#    #+#             */
+/*   Updated: 2024/06/21 19:20:25 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-
-static bool	philo_died(t_philo *philo)
+int	dinner_end(t_table *table)
 {
-	long	gap;
-	bool	full;
+	int	ret;
 
-	pthread_mutex_lock(&philo->philo_mtx);
-	full = philo->full;
-	pthread_mutex_unlock(&philo->philo_mtx);
-	if (full)
-		return (false);
-
-	pthread_mutex_lock(&philo->philo_mtx);
-	gap = get_time(MILLISECOND) - philo->t_last_meal;
-	pthread_mutex_unlock(&philo->philo_mtx);
-	gap = gap * 1000; // convert to microsecond
-	if (gap > philo->table->t_to_die)
-		return (true);
-	return (false);
-}
-
-bool	all_thread_running(t_table *table)
-{
-	bool	ret;
-
-	ret = false;
-	pthread_mutex_lock(&table->table_mtx);
-	if (table->thread_running == table->philo_nbr)
-		ret = true;
-	pthread_mutex_unlock(&table->table_mtx);
+	ret = 0;
+	pthread_mutex_lock(&table->dead_mtx);
+	if (table->dead)
+		ret = 1;
+	pthread_mutex_unlock(&table->dead_mtx);
 	return (ret);
 }
 
-void	*monitor(void *data)
+void	set_death(t_table *table)
+{
+	pthread_mutex_lock(&table->dead_mtx);
+	table->dead = 1;
+	pthread_mutex_unlock(&table->dead_mtx);
+}
+
+int	check_death(t_philo *philo)
+{
+	size_t	time;
+
+	pthread_mutex_lock(&philo->table->last_meal_mtx);
+	time = get_time() - philo->last_meal;
+	pthread_mutex_unlock(&philo->table->last_meal_mtx);
+	if (time >= philo->table->time_to_die)
+	{
+		set_death(philo->table);
+		usleep(1000);
+		print_msg(philo, DIED);
+		return (1);
+	}
+	return (0);
+}
+
+int	handle_end(t_table *table)
+{
+	size_t	i;
+	int		ret;
+
+	ret = 1;
+	i = 0;
+	while (i < table->philo_nbr)
+	{
+		if (check_death(&table->philos[i]))
+			return (1);
+		if (table->meal_nbr)
+		{
+			pthread_mutex_lock(&table->count_meal_mtx);
+			if (table->philos[i].count_meal < table->meal_nbr)
+				ret = 0;
+			pthread_mutex_unlock(&table->count_meal_mtx);
+		}
+		i++;
+	}
+	if (table->meal_nbr && ret)
+	{
+		set_death(table);
+		return (1);
+	}
+	else
+		return (0);
+}
+
+void	*monitor(void *arg)
 {
 	t_table	*table;
-	int		i;
 
-	table = (t_table *)data;
-	while (!all_thread_running(table))
-		;
-	while(!dinner_finished(table))
+	table = (t_table *)arg;
+	wait_all_threads(table->time_start_dinner);
+	while (!dinner_end(table))
 	{
-		i = -1;
-		while (++i < table->philo_nbr && !dinner_finished(table))
-		{
-			if (philo_died(table->philos + i))
-			{
-				pthread_mutex_lock(&table->table_mtx);
-				table->dinner_finished = true;
-				print_msg(table->philos + i, DIED);
-				pthread_mutex_unlock(&table->table_mtx);
-			}
-		}
+		if (handle_end(table))
+			break ;
+		usleep(1000);
 	}
 	return (NULL);
 }

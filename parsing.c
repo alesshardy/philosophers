@@ -5,85 +5,61 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/13 13:51:10 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/17 17:28:37 by apintus          ###   ########.fr       */
+/*   Created: 2024/06/21 18:14:15 by apintus           #+#    #+#             */
+/*   Updated: 2024/06/21 19:16:27 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static bool	is_digit(char c)
+static int check_args(int ac, char **av)
 {
-	return (c >= '0' && c <= '9');
-}
+	int	i;
+	int	j;
 
-static bool	is_space(char c)
-{
-	return ((c >= 9 && c <= 13) || c == 32);
-}
-
-static char	*check_input(char *str)
-{
-	int		len;
-	char	*nbr;
-
-	len = 0;
-	while (is_space(*str))
-		++str;
-	if (*str == '+')
-		++str;
-	else if (*str == '-')
-		return (error_handler("Only allow positive value"));
-	if (!is_digit(*str))
-		return (error_handler("Input not a correct digit"));
-	nbr = str;
-	while (is_digit(*str++))
-		++len;
-	if (len > 10)
-		return (error_handler("Value too big, INT_MAX is the limit"));
-	return (nbr);
-}
-
-static long	ft_atol(char *str)
-{
-	long	nbr;
-
-	nbr = 0;
-	str = check_input(str);
-	if (str == NULL)
-		return (-1);
-	while (is_digit(*str))
-		nbr = (nbr * 10) + (*str++ - 48);
-	if (nbr > INT_MAX)
-		return (printf("Value too big, INT_MAX is the limit\n"), -1);
-	return (nbr);
-}
-
-//x 1e3 to convert from Milliseconde to Microseconde (need by usleep)
-int	parser(t_table *table, char **av)
-{
-	table->philo_nbr = ft_atol(av[1]);
-	if (table->philo_nbr == -1)
-		return (1);
-	table->t_to_die = ft_atol(av[2]) * 1e3;
-	if (table->t_to_die == -1000)
-		return (1);
-	table->t_to_eat = ft_atol(av[3]) * 1e3;
-	if (table->t_to_eat == -1000)
-		return (1);
-	table->t_to_sleep = ft_atol(av[4]) * 1e3;
-	if (table->t_to_sleep == -1000)
-		return (1);
-	if (table->t_to_die < 60e3 || table->t_to_eat < 60e3
-		|| table->t_to_sleep < 60e3)
-		return (printf("Use timestamp above 60ms\n"), 1);
-	if (av[5])
+	i = 1;
+	while (i < ac)
 	{
-		table->max_meals = ft_atol(av[5]);
-		if (table->max_meals == -1)
-			return (1);
+		j = 0;
+		if (av[i][j] == '+')
+			j++;
+		while (av[i][j])
+		{
+			if (!ft_isdigit(av[i][j]))
+			{
+				ft_putstr_fd("Error: Wrong argument\n", 2);
+				return (1);
+			}
+			j++;
+		}
+		i++;
 	}
+	return (0);
+}
+
+int	parser(int ac, char **av, t_table *table)
+{
+	if (ac < 5 || ac > 6)
+	{
+		ft_putstr_fd("Error: Wrong number of arguments\n", 2);
+		return (1);
+	}
+	if (check_args(ac,av))
+		return (1);
+	table->philo_nbr = ft_atoi(av[1]);
+	table->time_to_die = ft_atoi(av[2]);
+	table->time_to_eat = ft_atoi(av[3]);
+	table->time_to_sleep = ft_atoi(av[4]);
+	if (ac == 6)
+		table->meal_nbr = ft_atoi(av[5]);
 	else
-		table->max_meals = -2; // flag
+		table->meal_nbr = 0;
+	if (table->philo_nbr < 1 || table->time_to_die < 60
+		|| table->time_to_eat < 60 || table->time_to_sleep < 60
+		|| (ac == 6 && table->meal_nbr < 1))
+	{
+		ft_putstr_fd("Error: Wrong argument\n", 2);
+		return (1);
+	}
 	return (0);
 }

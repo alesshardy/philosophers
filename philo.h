@@ -5,10 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/13 13:04:12 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/17 16:31:25 by apintus          ###   ########.fr       */
+/*   Created: 2024/06/21 18:13:56 by apintus           #+#    #+#             */
+/*   Updated: 2024/06/21 19:21:01 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifndef PHILO_H
+# define PHILO_H
 
 #include <stdio.h> // printf
 #include <stdlib.h> // malloc free
@@ -18,7 +21,7 @@
 					 // threads : crate join detach
 #include <sys/time.h> // gettimeofday
 #include <limits.h>
-#include <errno.h>
+# include <string.h> // memset
 
 /*********** STRUCTURES ***********/
 
@@ -32,18 +35,11 @@
 # define C      "\033[1;36m"   /* Bold Cyan */
 # define W      "\033[1;37m"   /* Bold White */
 
-typedef enum e_time_code
-{
-	SECOND,
-	MILLISECOND,
-	MICROSECOND,
-}	t_time_code;
-
 typedef enum e_t_msg
 {
-	THINK,
 	EAT,
 	SLEEP,
+	THINK,
 	FORK,
 	DIED,
 }	t_msg;
@@ -53,66 +49,68 @@ typedef pthread_mutex_t t_mtx;
 
 typedef struct s_table t_table;
 
-typedef struct s_fork
-{
-	t_mtx	fork_mtx;
-	int		id;
-}	t_fork;
-
 typedef struct s_philo
 {
-	int			id;
-	long		meals;
-	bool		full;
-	long		t_last_meal;
-	t_fork		*left_forks;
-	t_fork		*right_forks;
+	size_t		id;
+	size_t		position;
 	pthread_t	thread;
+	t_mtx		*left_fork;
+	t_mtx		*right_fork;
+	long long	last_meal;
+	size_t		count_meal;
 	t_table		*table;
-	t_mtx		philo_mtx;
 }	t_philo;
 
 typedef struct s_table
 {
-	long	philo_nbr;
-	long	t_to_die;
-	long	t_to_eat;
-	long	t_to_sleep;
-	long	max_meals;
-	long	start_dinner;
-	bool	dinner_finished;
-	bool	thread_ready;
-	long	thread_running;
-	pthread_t	monitor; // death checker
-	t_mtx	print_mtx;
-	t_mtx	table_mtx;
-	t_philo	*philos;
-	t_fork	*forks;
+	t_philo		*philos;
+	pthread_t	monitor;
+	t_mtx		*forks;
+	t_mtx		dead_mtx;
+	t_mtx		count_meal_mtx;
+	t_mtx		print_mtx;
+	t_mtx		last_meal_mtx;
+	size_t		philo_nbr;
+	size_t		time_to_die;
+	size_t		time_to_eat;
+	size_t		time_to_sleep;
+	size_t		meal_nbr;
+	size_t		time_start_dinner;
+	int			dead;
 }	t_table;
 
 /*********** PROTOTYPES ***********/
 
-// PARSING
-int	parser(t_table *table, char **av);
+// LIBFT
+void	ft_putstr_fd(char *s, int fd);
+int		ft_isdigit(int c);
+int		ft_atoi(const char *str);
+size_t	ft_strlen(const char *s);
 
-// EXIT
-char	*error_handler(char *str);
+// PARSING
+int	parser(int ac, char **av, t_table *table);
 
 // INIT
-int	ft_init(t_table *table);
+int	init_table(t_table *table);
+int	init_mutex(t_table *table);
 
 // UTILS
-long	get_time(t_time_code code);
-void	wait_all_thread(t_table *table);
-bool	dinner_finished(t_table *table);
-void	my_usleep(long time, t_table *table);
-void	clean(t_table *table);
+size_t	get_time(void);
+void	ft_usleep(size_t time, t_table *table);
+void	print_msg(t_philo *philo, int msg);
+void	cleanning(t_table *table);
+void	wait_all_threads(size_t time);
 
-// DINNER
-void	dinner(t_table *table);
+// ACTIONS
+void	eat(t_philo *philo);
+void	sleeping(t_philo *philo);
+void	think(t_philo *philo);
 
 // MONITOR
-void	*monitor(void *data);
+int		dinner_end(t_table *table);
+void	set_death(t_table *table);
+int		check_death(t_philo *philo);
+int		handle_end(t_table *table);
+void	*monitor(void *arg);
 
-// MSG
-void	print_msg(t_philo *philo, t_msg msg);
+#endif
