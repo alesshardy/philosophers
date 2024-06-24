@@ -6,7 +6,7 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:38:00 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/21 19:17:54 by apintus          ###   ########.fr       */
+/*   Updated: 2024/06/24 13:52:27 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static void	philo_forks_init(t_philo *philo, int i)
 
 static int	init_forks(t_table *table)
 {
-	size_t	i;
+	long	i;
 
 	i = 0;
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->philo_nbr);
@@ -68,7 +68,7 @@ static int	init_forks(t_table *table)
 
 static int	init_philos(t_table *table)
 {
-	size_t	i;
+	long	i;
 
 	i = 0;
 	table->philos = malloc(sizeof(t_philo) * table->philo_nbr);

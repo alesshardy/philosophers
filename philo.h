@@ -6,21 +6,21 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:13:56 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/21 19:21:01 by apintus          ###   ########.fr       */
+/*   Updated: 2024/06/24 17:45:43 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-#include <stdio.h> // printf
-#include <stdlib.h> // malloc free
-#include <unistd.h> //write usleep
-#include <stdbool.h>
-#include <pthread.h> // mutex: init destroy lock unlock
-					 // threads : crate join detach
-#include <sys/time.h> // gettimeofday
-#include <limits.h>
+# include <stdio.h> // printf
+# include <stdlib.h> // malloc free
+# include <unistd.h> //write usleep
+# include <stdbool.h>
+# include <pthread.h> // mutex: init destroy lock unlock
+						// threads : crate join detach
+# include <sys/time.h> // gettimeofday
+# include <limits.h>
 # include <string.h> // memset
 
 /*********** STRUCTURES ***********/
@@ -45,19 +45,19 @@ typedef enum e_t_msg
 }	t_msg;
 
 // Code more Readeable
-typedef pthread_mutex_t t_mtx;
+typedef pthread_mutex_t	t_mtx;
 
-typedef struct s_table t_table;
+typedef struct s_table	t_table;
 
 typedef struct s_philo
 {
-	size_t		id;
-	size_t		position;
+	long		id;
+	long		position;
 	pthread_t	thread;
 	t_mtx		*left_fork;
 	t_mtx		*right_fork;
-	long long	last_meal;
-	size_t		count_meal;
+	long		last_meal;
+	long		count_meal;
 	t_table		*table;
 }	t_philo;
 
@@ -70,12 +70,12 @@ typedef struct s_table
 	t_mtx		count_meal_mtx;
 	t_mtx		print_mtx;
 	t_mtx		last_meal_mtx;
-	size_t		philo_nbr;
-	size_t		time_to_die;
-	size_t		time_to_eat;
-	size_t		time_to_sleep;
-	size_t		meal_nbr;
-	size_t		time_start_dinner;
+	long		philo_nbr;
+	long		time_to_die;
+	long		time_to_eat;
+	long		time_to_sleep;
+	long		meal_nbr;
+	long		time_start_dinner;
 	int			dead;
 }	t_table;
 
@@ -83,16 +83,16 @@ typedef struct s_table
 
 // LIBFT
 void	ft_putstr_fd(char *s, int fd);
-int		ft_isdigit(int c);
+int		is_digit(int c);
 int		ft_atoi(const char *str);
-size_t	ft_strlen(const char *s);
+long	ft_strlen(const char *s);
 
 // PARSING
-int	parser(int ac, char **av, t_table *table);
+int		parser(int ac, char **av, t_table *table);
 
 // INIT
-int	init_table(t_table *table);
-int	init_mutex(t_table *table);
+int		init_table(t_table *table);
+int		init_mutex(t_table *table);
 
 // UTILS
 size_t	get_time(void);

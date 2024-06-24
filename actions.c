@@ -6,7 +6,7 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:56:41 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/21 19:18:16 by apintus          ###   ########.fr       */
+/*   Updated: 2024/06/24 18:47:48 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,42 +47,41 @@ void	sleeping(t_philo *philo)
 	ft_usleep(philo->table->time_to_sleep, philo->table);
 }
 
-void	think(t_philo *philo)
-{
-	size_t	time_to_think;
-	size_t	temp;
-
-	if (dinner_end(philo->table))
-		return ;
-	pthread_mutex_lock(&philo->table->last_meal_mtx);
-	time_to_think = (philo->table->time_to_die);
-	temp = ((get_time() - philo->last_meal) + philo->table->time_to_eat);
-	pthread_mutex_unlock(&philo->table->last_meal_mtx);
-	if (temp >= time_to_think)
-		time_to_think = 0;
-	else
-	{
-
-		time_to_think -= temp;
-		time_to_think /= 2;
-		if (time_to_think > 500)
-			time_to_think = 150;
-	}
-	print_msg(philo, THINK);
-	ft_usleep(time_to_think, philo->table);
-	return ;
-}
-
 // void	think(t_philo *philo)
 // {
 // 	size_t	time_to_think;
+// 	size_t	temp;
 
 // 	if (dinner_end(philo->table))
 // 		return ;
-// 	print_msg(philo, THINK);
-// 	if (philo->table->nbr_philos % 2 == 0)
-// 		return ;
+// 	pthread_mutex_lock(&philo->table->last_meal_mtx);
+// 	time_to_think = (philo->table->time_to_die);
+// 	temp = ((get_time() - philo->last_meal) + philo->table->time_to_eat);
+// 	pthread_mutex_unlock(&philo->table->last_meal_mtx);
+// 	if (temp >= time_to_think)
+// 		time_to_think = 0;
 // 	else
-// 		time_to_think = 100;
+// 	{
+// 		time_to_think -= temp;
+// 		time_to_think /= 2;
+// 		if (time_to_think > 500)
+// 			time_to_think = 150;
+// 	}
+// 	print_msg(philo, THINK);
 // 	ft_usleep(time_to_think, philo->table);
+// 	return ;
 // }
+
+void	think(t_philo *philo)
+{
+	size_t	time_to_think;
+
+	if (dinner_end(philo->table))
+		return ;
+	print_msg(philo, THINK);
+	if (philo->table->philo_nbr % 2 == 0)
+		return ;
+	else
+		time_to_think = 100;
+	ft_usleep(time_to_think, philo->table);
+}

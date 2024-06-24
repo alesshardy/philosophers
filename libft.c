@@ -6,7 +6,7 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:30:40 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/21 18:33:18 by apintus          ###   ########.fr       */
+/*   Updated: 2024/06/24 17:45:34 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	ft_putstr_fd(char *s, int fd)
 		write(fd, s, ft_strlen(s));
 }
 
-int	ft_isdigit(int c)
+int	is_digit(int c)
 {
 	if (c >= '0' && c <= '9')
 		return (1);
@@ -51,9 +51,9 @@ int	ft_atoi(const char *str)
 	return (nb * sign);
 }
 
-size_t	ft_strlen(const char *s)
+long	ft_strlen(const char *s)
 {
-	size_t	i;
+	long	i;
 
 	i = 0;
 	while (s[i])

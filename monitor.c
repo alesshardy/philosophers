@@ -6,7 +6,7 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 19:07:38 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/21 19:20:25 by apintus          ###   ########.fr       */
+/*   Updated: 2024/06/24 17:56:52 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	set_death(t_table *table)
 
 int	check_death(t_philo *philo)
 {
-	size_t	time;
+	long	time;
 
 	pthread_mutex_lock(&philo->table->last_meal_mtx);
 	time = get_time() - philo->last_meal;
@@ -50,7 +50,7 @@ int	check_death(t_philo *philo)
 
 int	handle_end(t_table *table)
 {
-	size_t	i;
+	long	i;
 	int		ret;
 
 	ret = 1;
