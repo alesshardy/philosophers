@@ -6,7 +6,7 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:14:45 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/24 17:42:38 by apintus          ###   ########.fr       */
+/*   Updated: 2024/06/25 12:14:31 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,18 @@ void	ft_usleep(size_t time, t_table *table)
 	{
 		if (dinner_end(table))
 			break ;
-		usleep(100);
+		usleep(500);
 	}
 }
+
+// void	ft_usleep(size_t time, t_table *table)
+// {
+// 	size_t	end;
+
+// 	end = get_time() + time;
+// 	while (!dinner_end(table) && get_time() < end)
+// 		usleep(500);
+// }
 
 void	cleanning(t_table *table)
 {
