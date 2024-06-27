@@ -6,7 +6,7 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:13:56 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/24 17:45:43 by apintus          ###   ########.fr       */
+/*   Updated: 2024/06/27 12:33:43 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,9 @@ void	wait_all_threads(size_t time);
 // ACTIONS
 void	eat(t_philo *philo);
 void	sleeping(t_philo *philo);
+// void	think(t_philo *philo, bool desync);
 void	think(t_philo *philo);
+// void	desync(t_philo *philo);
 
 // MONITOR
 int		dinner_end(t_table *table);

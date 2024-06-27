@@ -6,7 +6,7 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:14:15 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/24 17:47:40 by apintus          ###   ########.fr       */
+/*   Updated: 2024/06/25 14:59:51 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ static char	*check_input(char *str)
 	nbr = str;
 	while (is_digit(*str++))
 		++len;
+	--str;
+	if (*str != '\0')
+		return (ft_putstr_fd("Input not a correct digit\n", 2), NULL);
 	if (len > 10)
 		return (ft_putstr_fd("Value too big, INT_MAX is the limit\n", 2), NULL);
 	return (nbr);

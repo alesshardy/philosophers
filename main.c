@@ -6,7 +6,7 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:14:03 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/24 18:13:11 by apintus          ###   ########.fr       */
+/*   Updated: 2024/06/27 15:00:39 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	check_full(t_table *table)
 	long	i;
 
 	i = 0;
+	if (table->meal_nbr == 0)
+		return ;
 	while (i < table->philo_nbr)
 	{
 		if (table->philos[i].count_meal == table->meal_nbr)

@@ -6,7 +6,7 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:56:41 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/24 18:47:48 by apintus          ###   ########.fr       */
+/*   Updated: 2024/06/27 15:00:52 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,31 +47,6 @@ void	sleeping(t_philo *philo)
 	ft_usleep(philo->table->time_to_sleep, philo->table);
 }
 
-// void	think(t_philo *philo)
-// {
-// 	size_t	time_to_think;
-// 	size_t	temp;
-
-// 	if (dinner_end(philo->table))
-// 		return ;
-// 	pthread_mutex_lock(&philo->table->last_meal_mtx);
-// 	time_to_think = (philo->table->time_to_die);
-// 	temp = ((get_time() - philo->last_meal) + philo->table->time_to_eat);
-// 	pthread_mutex_unlock(&philo->table->last_meal_mtx);
-// 	if (temp >= time_to_think)
-// 		time_to_think = 0;
-// 	else
-// 	{
-// 		time_to_think -= temp;
-// 		time_to_think /= 2;
-// 		if (time_to_think > 500)
-// 			time_to_think = 150;
-// 	}
-// 	print_msg(philo, THINK);
-// 	ft_usleep(time_to_think, philo->table);
-// 	return ;
-// }
-
 void	think(t_philo *philo)
 {
 	size_t	time_to_think;
@@ -81,7 +56,43 @@ void	think(t_philo *philo)
 	print_msg(philo, THINK);
 	if (philo->table->philo_nbr % 2 == 0)
 		return ;
+	else if (philo->table->time_to_sleep > philo->table->time_to_eat)
+		return ;
 	else
 		time_to_think = 100;
 	ft_usleep(time_to_think, philo->table);
 }
+
+/* void	desync(t_philo *philo)
+{
+	if (philo->table->philo_nbr % 2 == 0)
+	{
+		if (philo->id % 2 == 0)
+			ft_usleep(30, philo->table);
+	}
+	else
+	{
+		if (philo->id % 2 == 0)
+			think(philo, true);
+	}
+}
+
+// V3
+void	think(t_philo *philo, bool desync)
+{
+	long	t_eat;
+	long	t_sleep;
+	long	t_think;
+
+	if (!desync)
+		print_msg(philo, THINK);
+	if (philo->table->philo_nbr % 2 == 0) // pair system fair
+		return ;
+	t_eat = philo->table->time_to_eat;
+	t_sleep = philo->table->time_to_sleep;
+	t_think = t_eat * 2 - t_sleep;
+	if (t_think < 0)
+		t_think = 0;
+	// action magique
+	ft_usleep(t_think * 0.42, philo->table);
+} */
