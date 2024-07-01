@@ -6,7 +6,7 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:14:45 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/26 12:54:22 by apintus          ###   ########.fr       */
+/*   Updated: 2024/07/01 12:15:28 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,25 +28,31 @@ size_t	get_time(void)
 
 void	ft_usleep(size_t time, t_table *table)
 {
-	size_t	start;
+	t_data_time	data;
 
-	start = get_time();
-	while (get_time() - start < time)
+	data.start = get_time();
+	data.remaining = time;
+	while (data.remaining > 0)
 	{
 		if (dinner_end(table))
 			break ;
-		usleep(500);
+		data.now = get_time();
+		if (data.start + time > data.now)
+			data.remaining = data.start + time - data.now;
+		else
+			data.remaining = 0;
+		if (data.remaining > 500)
+			data.sleep_time = 500;
+		else
+			data.sleep_time = data.remaining;
+		usleep(data.sleep_time);
+		data.now = get_time();
+		if (data.start + time > data.now)
+			data.remaining = data.start + time - data.now;
+		else
+			data.remaining = 0;
 	}
 }
-
-// void	ft_usleep(size_t time, t_table *table)
-// {
-// 	size_t	end;
-
-// 	end = get_time() + time;
-// 	while (!dinner_end(table) && get_time() < end)
-// 		usleep(500);
-// }
 
 void	cleanning(t_table *table)
 {

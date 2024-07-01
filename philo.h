@@ -6,22 +6,21 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:13:56 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/27 12:33:43 by apintus          ###   ########.fr       */
+/*   Updated: 2024/07/01 12:45:44 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include <stdio.h> // printf
-# include <stdlib.h> // malloc free
-# include <unistd.h> //write usleep
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
 # include <stdbool.h>
-# include <pthread.h> // mutex: init destroy lock unlock
-						// threads : crate join detach
-# include <sys/time.h> // gettimeofday
+# include <pthread.h>
+# include <sys/time.h>
 # include <limits.h>
-# include <string.h> // memset
+# include <string.h>
 
 /*********** STRUCTURES ***********/
 
@@ -48,6 +47,14 @@ typedef enum e_t_msg
 typedef pthread_mutex_t	t_mtx;
 
 typedef struct s_table	t_table;
+
+typedef struct s_data_time
+{
+	size_t	start;
+	size_t	now;
+	size_t	remaining;
+	size_t	sleep_time;
+}	t_data_time;
 
 typedef struct s_philo
 {
@@ -84,7 +91,7 @@ typedef struct s_table
 // LIBFT
 void	ft_putstr_fd(char *s, int fd);
 int		is_digit(int c);
-int		ft_atoi(const char *str);
+int		is_space(char c);
 long	ft_strlen(const char *s);
 
 // PARSING
@@ -104,9 +111,7 @@ void	wait_all_threads(size_t time);
 // ACTIONS
 void	eat(t_philo *philo);
 void	sleeping(t_philo *philo);
-// void	think(t_philo *philo, bool desync);
 void	think(t_philo *philo);
-// void	desync(t_philo *philo);
 
 // MONITOR
 int		dinner_end(t_table *table);

@@ -6,16 +6,11 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:14:15 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/25 14:59:51 by apintus          ###   ########.fr       */
+/*   Updated: 2024/07/01 12:44:09 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-static bool	is_space(char c)
-{
-	return ((c >= 9 && c <= 13) || c == 32);
-}
 
 static char	*check_input(char *str)
 {

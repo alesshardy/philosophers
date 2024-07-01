@@ -6,7 +6,7 @@
 /*   By: apintus <apintus@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:56:41 by apintus           #+#    #+#             */
-/*   Updated: 2024/06/27 15:00:52 by apintus          ###   ########.fr       */
+/*   Updated: 2024/06/28 16:30:26 by apintus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,40 +59,6 @@ void	think(t_philo *philo)
 	else if (philo->table->time_to_sleep > philo->table->time_to_eat)
 		return ;
 	else
-		time_to_think = 100;
+		time_to_think = philo->table->time_to_eat;
 	ft_usleep(time_to_think, philo->table);
 }
-
-/* void	desync(t_philo *philo)
-{
-	if (philo->table->philo_nbr % 2 == 0)
-	{
-		if (philo->id % 2 == 0)
-			ft_usleep(30, philo->table);
-	}
-	else
-	{
-		if (philo->id % 2 == 0)
-			think(philo, true);
-	}
-}
-
-// V3
-void	think(t_philo *philo, bool desync)
-{
-	long	t_eat;
-	long	t_sleep;
-	long	t_think;
-
-	if (!desync)
-		print_msg(philo, THINK);
-	if (philo->table->philo_nbr % 2 == 0) // pair system fair
-		return ;
-	t_eat = philo->table->time_to_eat;
-	t_sleep = philo->table->time_to_sleep;
-	t_think = t_eat * 2 - t_sleep;
-	if (t_think < 0)
-		t_think = 0;
-	// action magique
-	ft_usleep(t_think * 0.42, philo->table);
-} */
